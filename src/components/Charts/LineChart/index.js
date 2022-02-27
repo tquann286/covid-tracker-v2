@@ -1,9 +1,11 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
+import { ButtonGroup, Button } from '@material-ui/core'
 import HighchartsReact from 'highcharts-react-official'
 import Highchart from 'highcharts'
+import moment from 'moment'
 
 const generateOptions = (data) => {
-	const categories = []
+	const categories = data.map((item) => moment(item.Date).format('DD/MM/YYYY'))
 	return {
 		chart: {
 			height: 500,
@@ -39,19 +41,68 @@ const generateOptions = (data) => {
 		},
 		series: [
 			{
-				name: 'Tổng Ca nhiễm',
+				name: 'Tổng ca nhiễm',
 				data: data.map((item) => item.Confirmed),
 			},
 		],
 	}
 }
 
-export default function LineChart({data}) {
-  const [options, setOptions] = useState({})
+export default function LineChart({ data }) {
+	const [options, setOptions] = useState({})
+	const [reportType, setReportType] = useState('all')
 
-  useEffect(()=>{
-    setOptions(generateOptions(data))
-  },[data])
+	useEffect(() => {
+		let customData = []
 
-	return <HighchartsReact highchart={Highchart} options={options} />
+		switch (reportType) {
+			case 'all':
+				customData = data
+				break
+			case '30':
+				customData = data.slice(data.length - 30)
+				break
+			case '7':
+				customData = data.slice(data.length - 7)
+				break
+			default:
+				customData = data
+				break
+		}
+
+		setOptions(generateOptions(customData))
+	}, [data, reportType])
+
+	return (
+		<React.Fragment>
+			<ButtonGroup
+				size='small'
+				aria-label='small outlined button group'
+				style={{
+					display: 'flex',
+					justifyContent: 'flex-end',
+				}}
+			>
+				<Button
+					color={reportType === 'all' ? 'secondary' : ''}
+					onClick={() => setReportType('all')}
+				>
+					Tất cả
+				</Button>
+				<Button
+					color={reportType === '30' ? 'secondary' : ''}
+					onClick={() => setReportType('30')}
+				>
+					30 Ngày
+				</Button>
+				<Button
+					color={reportType === '7' ? 'secondary' : ''}
+					onClick={() => setReportType('7')}
+				>
+					7 Ngày
+				</Button>
+			</ButtonGroup>
+			<HighchartsReact highchart={Highchart} options={options} />
+		</React.Fragment>
+	)
 }

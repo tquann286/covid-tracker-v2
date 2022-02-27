@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-
 import CountrySelector from './components/CountrySelector'
 import Highlight from './components/Highlight'
 import Summary from './components/Summary'
@@ -14,6 +13,8 @@ function App() {
 		getCountries().then((res) => {
 			setCountries(res.data)
 		})
+
+		setSelectedCountryId('vn')
 	}, [])
 
 	const handleOnChange = (e) => {
@@ -21,7 +22,7 @@ function App() {
 	}
 
 	useEffect(() => {
-		if (selectedCountryId) {
+		if (selectedCountryId && countries.length > 0) {
 			const { Slug } = countries.find(
 				(country) => country.ISO2.toLowerCase() === selectedCountryId
 			)
@@ -29,7 +30,7 @@ function App() {
 			getReportByCountry(Slug).then((res) => {
 				
 				res.data.pop()
-				
+
 				setReport(res.data)
 			})
 		}
@@ -37,7 +38,7 @@ function App() {
 
 	return (
 		<React.Fragment>
-			<CountrySelector countries={countries} handleOnChange={handleOnChange} />
+			<CountrySelector value={selectedCountryId} countries={countries} handleOnChange={handleOnChange} />
 			<Highlight report={report} />
 			<Summary report={report} />
 		</React.Fragment>
