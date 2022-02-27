@@ -1,9 +1,18 @@
 import React from 'react'
 import { FormControl, InputLabel, NativeSelect, FormHelperText } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme)=>({
+	formControl: {
+		margin: `${theme.spacing(3)}px 0`
+	}
+}))
 
 export default function CountrySelector({ value, handleOnChange, countries }) {
+	const styles = useStyles()
+
 	return (
-		<FormControl>
+		<FormControl className={styles.formControl}>
 			<InputLabel htmlFor='country-selector' shrink>
 				Quốc gia
 			</InputLabel>

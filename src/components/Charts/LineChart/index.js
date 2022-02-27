@@ -48,12 +48,12 @@ const generateOptions = (data) => {
 	}
 }
 
-export default function LineChart({ data }) {
+const LineChart = ({ data }) => {
 	const [options, setOptions] = useState({})
 	const [reportType, setReportType] = useState('all')
 
 	useEffect(() => {
-		let customData = []
+		let customData = [] 
 
 		switch (reportType) {
 			case 'all':
@@ -106,3 +106,5 @@ export default function LineChart({ data }) {
 		</React.Fragment>
 	)
 }
+
+export default React.memo(LineChart)

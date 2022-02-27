@@ -3,6 +3,13 @@ import CountrySelector from './components/CountrySelector'
 import Highlight from './components/Highlight'
 import Summary from './components/Summary'
 import { getCountries, getReportByCountry } from './apis/index'
+import { sortBy } from 'lodash'
+import moment from 'moment'
+import 'moment/locale/vi'
+import '@fontsource/roboto'
+import { Container, Typography } from '@material-ui/core'
+
+moment.locale('vi')
 
 function App() {
 	const [countries, setCountries] = useState([])
@@ -11,10 +18,11 @@ function App() {
 
 	useEffect(() => {
 		getCountries().then((res) => {
-			setCountries(res.data)
-		})
+			const countries = sortBy(res.data, 'Country')
+			setCountries(countries)
 
-		setSelectedCountryId('vn')
+			setSelectedCountryId('vn')
+		})
 	}, [])
 
 	const handleOnChange = (e) => {
@@ -28,7 +36,6 @@ function App() {
 			)
 
 			getReportByCountry(Slug).then((res) => {
-				
 				res.data.pop()
 
 				setReport(res.data)
@@ -37,11 +44,19 @@ function App() {
 	}, [countries, selectedCountryId])
 
 	return (
-		<React.Fragment>
-			<CountrySelector value={selectedCountryId} countries={countries} handleOnChange={handleOnChange} />
+		<Container style={{ marginTop: 20 }}>
+			<Typography variant='h2' component='h2'>
+				Số liệu COVID-19
+			</Typography>
+			<Typography>{moment().format('LLL')}</Typography>
+			<CountrySelector
+				value={selectedCountryId}
+				countries={countries}
+				handleOnChange={handleOnChange}
+			/>
 			<Highlight report={report} />
-			<Summary report={report} />
-		</React.Fragment>
+			<Summary report={report} selectedCountryId={selectedCountryId} />
+		</Container>
 	)
 }
 
