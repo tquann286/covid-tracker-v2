@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import Highchart from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import highchartsMap from 'highcharts/modules/map'
@@ -33,14 +33,29 @@ const initOptions = {
 	},
 	series: [
 		{
+			mapData: {},
 			name: 'Dân số',
 			joinBy: ['hc-key', 'key'],
 		},
 	],
 }
 
-export default function HighMaps() {
-  const [options, setOptions] = useState({})
+export default function HighMaps({ mapData }) {
+	const [options, setOptions] = useState({})
+
+	useEffect(() => {
+		const fakeData = []
+		setOptions({
+			...initOptions,
+			series: [
+				{
+					...initOptions.series[0],
+					mapData: mapData,
+					data: fakeData,
+				},
+			],
+		})
+	}, [])
 
 	return (
 		<HighchartsReact
